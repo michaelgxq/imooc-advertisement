@@ -1,0 +1,109 @@
+spring:
+    application:
+      name: eureka-server
+
+server:
+  port: 8000
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    enable-self-preservation: false
+
+
+---
+# 配置多节点的 Eureka-Server，以实现多个 Eureka-Server 之间的相互注册
+# 即 Eureka-Server A 的服务列表中有 Eureka-Server B，而 Eureka-Server B 的服务列表中有 Eureka-Server A
+# 这其实就是 Eureka-Server 集群
+#spring:
+#  application:
+#    name: eureka-server
+#  profiles: server-1 # 设置其中一个 Eureka-Server 节点的服务名称（即此时的 server-1）
+#
+#server:
+#  port: 8000
+#
+#eureka:
+#  instance:
+#    hostname: server-1
+#    # 设置是否使用 IP 地址进行注册，由于我们只是在本机上模拟多节点
+#    # 所以
+#    # 本机其实只有一个 IP 地址
+#    # 所以
+#    # 这里就要设置成 false，让它不是通过 IP 地址进行其他 Eureka-Sever 的注册，而是通过服务名（即上面 profiles 属性设置的服务名）来注册其他的 Eureka-Sever
+#    prefer-ip-address: false
+#  client:
+#    service-url:
+#      # 这里 defaultZone 的值设置为其他两个 Eureka-Server 节点的地址（由于上面 prefer-ip-address 属性设置为了 false，所以这里 URL 其实是服务名 + 端口号）
+#      defaultZone: http://server2:8001/eureka/,http://server3:8002/eureka/
+#
+#---
+#
+#spring:
+#  application:
+#    name: eureka-server
+#  profiles: server-2 # 设置其中一个 Eureka-Server 节点的服务名称（即此时的 server-2）
+#
+#server:
+#  port: 8001
+#
+#eureka:
+#  instance:
+#    hostname: server-2
+#    # 设置是否使用 IP 地址进行注册，由于我们只是在本机上模拟多节点
+#    # 所以
+#    # 本机其实只有一个 IP 地址
+#    # 所以
+#    # 这里就要设置成 false，让它不是通过 IP 地址进行其他 Eureka-Sever 的注册，而是通过服务名（即上面 profiles 属性设置的服务名）来注册其他的 Eureka-Sever
+#    prefer-ip-address: false
+#  client:
+#    service-url:
+#      # 这里 defaultZone 的值设置为其他两个 Eureka-Server 节点的地址（由于上面 prefer-ip-address 属性设置为了 false，所以这里 URL 其实是服务名 + 端口号）
+#      defaultZone: http://server1:8000/eureka/,http://server3:8002/eureka/
+#
+#---
+#
+#spring:
+#  application:
+#    name: eureka-server
+#  profiles: server-3 # 设置其中一个 Eureka-Server 节点的服务名称（即此时的 server-3）
+#
+#server:
+#  port: 8001
+#
+#eureka:
+#  instance:
+#    hostname: server-3
+#    # 设置是否使用 IP 地址进行注册，由于我们只是在本机上模拟多节点
+#    # 所以
+#    # 本机其实只有一个 IP 地址
+#    # 所以
+#    # 这里就要设置成 false，让它不是通过 IP 地址进行其他 Eureka-Sever 的注册，而是通过服务名（即上面 profiles 属性设置的服务名）来注册其他的 Eureka-Sever
+#    prefer-ip-address: false
+#  client:
+#    service-url:
+#      # 这里 defaultZone 的值设置为其他两个 Eureka-Server 节点的地址（由于上面 prefer-ip-address 属性设置为了 false，所以这里 URL 其实是服务名 + 端口号）
+#      defaultZone: http://server1:8000/eureka/,http://server2:8001/eureka/
+
+
+spring:
+  mail:
+    host: smtp.126.com # 配置邮箱服务器地址
+    port: 25
+    username: michaelgxq@126.com # 配置我们自己邮箱的地址
+    password: IULWZZGMSDSAVGNF # 这个 password 设置的不是邮箱登录密码，而是允许 POP3/SMTP 或者 IMAP/SMTP 服务的授权码，这个授权码需要登录网页版邮箱，然后点击 设置 --- 客户端授权码，
+    # 选择开启 POP3/SMTP 或者 IMAP/SMTP 服务，然后获取这个 16 个字符的密码
+    default-encoding: utf-8 # 设置我们要发送的邮件的默认编码
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/o2o?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true
+    username: root
+    password: root
+
+

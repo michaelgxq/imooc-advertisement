@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 首先设置 excel 标签
+     id 属性即为该 excel 标签的 id，code 属性一般和 id 属性一致，name 属性即为我们导出的模板（即空的 EXCEL 文件）的文件名
+-->
+<excel id="student" code="student" name="学生信息导入">
+    <!-- 定义 colgroup 标签，然后在 colgroup 标签中设置 col 标签
+         每一个 col 标签即表示一个列，有多少 col 标签即表示当前 EXCEL 中有多少列
+         并且
+         col 标签中的 index 属性中的英文即表示的是列的序号（因为 EXCEL 中每一列都是用英文表示序号的），width 属性表示的就是该列的宽度
+    -->
+    <colgroup>
+        <col index="A" width="17em"></col>
+        <col index="B" width="17em"></col>
+        <col index="C" width="17em"></col>
+        <col index="D" width="17em"></col>
+        <col index="E" width="17em"></col>
+        <col index="F" width="17em"></col>
+    </colgroup>
+    <!--  此 title 标签中的 tr 标签定义的就是 EXCEL 文件的标题，tr 标签中的 height 属性设置的是该标题所在行的高度
+         其中的 td 标签中的 rowspan 属性设置的是此标题占多少行，colspan 属性设置的是此标题占多少个单元格，value 设置的就是该标题的名字
+    -->
+    <title>
+        <tr height="16px">
+            <td rowspan="1" colspan="6" value="学生信息导入"/>
+        </tr>
+    </title>
+    <!--  此 thead 标签中的 th 标签就是用于设置 EXCEL 中每一列的列名的，tr 标签的 height 属性设置的是这些单元格所在行的高度
+          其中 th 标签的 value 属性就是用于设置列名的
+    -->
+    <thead>
+        <tr height="16px">
+            <th value="编号"></th>
+            <th value="姓名"></th>
+            <th value="年龄"></th>
+            <th value="性别"></th>
+            <th value="出生日期"></th>
+            <th value="爱好"></th>
+        </tr>
+    </thead>
+    <!--  此 tbody 标签中的 tr 标签用于设置 EXCEL 表中含有具体数据的单元格的
+          其中
+          height 属性设置的这些单元格所在行的高度，firstrow 属性设置的这些单元格在 EXCEL 表中的起始行（即此时 2 表示它们的起始行是第 3 行）
+          firstcol 设置的是这些单元格的起始列（即此时 0 表示它们的起始列是第一列）
+          repeat 属性用于表示我们在初始化模板时（即要设置的那个模板 EXCEL 文件）
+          然后
+          td 标签用于设置每个单元格的属性
+          即
+          type 属性设置该单元格中数据的数据类型，isnullable 设置该单元格是否可以为空，maxlength 设置该单元格中数据的最大长度,
+          format 属性设置的该单元格中数据的格式
+    -->
+    <tbody>
+        <tr height="16px" firstrow="2" firstcol="0" repeat="5">
+            <!--  此 td 标签设置的是 编号 列          -->
+            <td type="string" isnullable="false" maxlength="30"/>
+            <!--  此 td 标签设置的是 姓名 列          -->
+            <td type="string" isnullable="false" maxlength="50"/>
+            <!--  此 td 标签设置的是 年龄 列          -->
+            <td type="numeric" format="##0" isnullable="false"/>
+            <!--  此 td 标签设置的是 性别 列          -->
+            <td type="enum" format="男,女" isnullable="true"/>
+            <!--  此 td 标签设置的是 出生日期 列          -->
+            <td type="date" isnullable="false" maxlength="30"/>
+            <!--  此 td 标签设置的是 编号 列          -->
+            <td type="enum" format="足球,篮球,乒乓球" isnullable="false"/>
+        </tr>
+    </tbody>
+</excel>
