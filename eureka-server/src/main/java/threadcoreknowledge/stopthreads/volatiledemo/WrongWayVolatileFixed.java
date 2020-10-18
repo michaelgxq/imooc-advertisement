@@ -25,6 +25,7 @@ public class WrongWayVolatileFixed {
         System.out.println("消费者不需要更多数据了。");
 
 
+        // 调用 Thread 类中的 interrupt() 方法来让对象 producer 所在线程停止
         producerThread.interrupt();
     }
 
@@ -32,6 +33,10 @@ public class WrongWayVolatileFixed {
     class Producer implements Runnable {
 
         BlockingQueue storage;
+
+        // 此时
+        // 我们在 Producer 类中就不再设置用 volatile 修饰的布尔类型的标记位了
+
 
         public Producer(BlockingQueue storage) {
             this.storage = storage;
@@ -42,6 +47,8 @@ public class WrongWayVolatileFixed {
         public void run() {
             int num = 0;
             try {
+                // 此时
+                // while 循环中的判断语句我们也是使用 isInterrupted() 方法来监听中断通知
                 while (num <= 100000 && !Thread.currentThread().isInterrupted()) {
                     if (num % 100 == 0) {
                         storage.put(num);
