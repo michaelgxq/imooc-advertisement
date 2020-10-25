@@ -18,17 +18,20 @@ public class CantCatchDirectly implements Runnable {
             Thread.sleep(300);
             new Thread(new CantCatchDirectly(), "MyThread-4").start();
         } catch (RuntimeException e) {
+
             System.out.println("Caught Exception.");
+
         }
 
     }
 
     @Override
     public void run() {
+        // 我们在 run() 方法中捕获子线程抛出的异常
         try {
             throw new RuntimeException();
         } catch (RuntimeException e) {
-            System.out.println("Caught Exception.");
+            System.out.println("子线程的异常被捕获");
         }
     }
 }
