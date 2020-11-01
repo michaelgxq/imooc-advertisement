@@ -1,5 +1,7 @@
 package jmm;
 
+import java.lang.ref.SoftReference;
+
 /**
  * 描述：     演示可见性带来的问题
  */
@@ -17,6 +19,7 @@ public class FieldVisibilityABCD {
         synchronized (this) {
             d = 6;
         }
+
     }
 
 

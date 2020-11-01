@@ -34,11 +34,11 @@ public class DeadLock implements Runnable {
 
         // 上面的这段代码会形成死锁
         // 即
-        // 当线程 A 进入了同步代码块 1
+        // 当线程 A 进入了同步代码块 1 时
         // 此时
         // 线程 A 获取到了 deadLock1 这个锁对象
         // 与此同时
-        // 线程 B 进入了同步代码块 2，线程 B 获取了 deadLock2 这个锁对象
+        // 线程 B 进入了同步代码块 2，并且线程 B 获取了 deadLock2 这个锁对象
         // 当线程 A 执行完了 System.out.println("同步代码块 1 的外层同步代码块"); 这条语句后
         // 为了进入它内层的同步代码块而要获取 deadLock2 这个锁对象时
         // 与此同时
