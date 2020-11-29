@@ -1,6 +1,8 @@
-package rabbitmq.quickstart;
+package rabbitmq.defineconsumer;
 
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -24,7 +26,7 @@ public class Producer {
         // 通过 ConnectionFactory ( 即连接工厂 ) 类对象调用 newConnection() 方法来创建 Connection （即连接）类对象
         Connection connection = connectionFactory.newConnection();
 
-        // 通过 Cnnection 类对象调用 newConnection() 方法来创建 Channel （即信道）类对象
+        // 通过 Connection 类对象调用 newConnection() 方法来创建 Channel （即信道）类对象
         Channel channel = connection.createChannel();
 
         // 定义一条消息

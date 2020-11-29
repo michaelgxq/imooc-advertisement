@@ -1,9 +1,9 @@
-package rabbitmq.quickstart;
+package rabbitmq.confirmmessage;
 
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -28,16 +28,22 @@ public class Consumer {
         // 通过 Cnnection 类对象调用 newConnection() 方法来创建 Channel （即信道）类对象
         Channel channel = connection.createChannel();
 
-        String queueName = "test001";
+
+        // 定义一个队列名
+        String queueName = "test.rebound";
+
+        HashMap<String, Object> props = new HashMap<>();
+        props.put("x-message-ttl", 5000);
+
 
         // 通过 Channel （即信道）类对象调用 queueDeclare() 方法创建队列
-        // 该方法接收一下参数
+        // 该方法有以下几个形参
         // 形参 queue 接收队列名
         // 形参 durable 表示是否持久化（它是一个布尔值）（它表示在我们重启 RabbitMQ 之后，该队列是否还存在）
         // 形参 exclusive 表示是否独占（它是一个布尔值）（它表示该队列是否只有当前 Channel 才能监听，它的作用后面会讲）
         // 形参 autoDelete 表示是否自动删除（它是一个布尔值）（它表示某个队列如果没有和任何交换机有绑定关系，那么就可以把这个队列删除）
         // 形参 arguments 接收该队列的属性
-        channel.queueDeclare(queueName,true, false,false, null);
+        channel.queueDeclare(queueName,true, false,false, props);
 
 
         // 通过 Channel 类对象调用 basicConsume() 方法，设置队列信息，并处理接收到的信息
@@ -47,11 +53,15 @@ public class Consumer {
         // 形参 callback 接收一个 Consumer （即消费者）类或者它的子类的对象
         channel.basicConsume(queueName, false, new DefaultConsumer(channel) {
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
 
-                System.out.println(Arrays.toString(body));
+                System.out.println(new String(body));
+
+                System.out.println(properties.getReplyTo() + "========");
+
             }
         });
+
 
     }
 }

@@ -1,4 +1,4 @@
-package rabbitmq.quickstart;
+package rabbitmq.exchangetype.direct;
 
 import com.rabbitmq.client.*;
 
@@ -28,7 +28,18 @@ public class Consumer {
         // 通过 Cnnection 类对象调用 newConnection() 方法来创建 Channel （即信道）类对象
         Channel channel = connection.createChannel();
 
+        // 定义一个交换机名
+        String exchangeName = "test_direct_exchange";
+
+        // 定义一个交换机模式
+        String exchangeType = "direct";
+
+        // 定义一个队列名
         String queueName = "test001";
+
+        // 定义一个 bindingKey
+        String bindingKey = "test.direct";
+
 
         // 通过 Channel （即信道）类对象调用 queueDeclare() 方法创建队列
         // 该方法接收一下参数
@@ -38,6 +49,12 @@ public class Consumer {
         // 形参 autoDelete 表示是否自动删除（它是一个布尔值）（它表示某个队列如果没有和任何交换机有绑定关系，那么就可以把这个队列删除）
         // 形参 arguments 接收该队列的属性
         channel.queueDeclare(queueName,true, false,false, null);
+
+        // 通过对象 channel 调用 exchangeDeclare() 方法用于声明一个交换机
+        channel.exchangeDeclare(exchangeName,exchangeType,false,false,null);
+
+        // 通过对象 channel 调用 queueBind() 方法来把一个队列和交换机进行绑定
+        channel.queueBind(queueName,exchangeName,bindingKey);
 
 
         // 通过 Channel 类对象调用 basicConsume() 方法，设置队列信息，并处理接收到的信息
@@ -52,6 +69,7 @@ public class Consumer {
                 System.out.println(Arrays.toString(body));
             }
         });
+
 
     }
 }

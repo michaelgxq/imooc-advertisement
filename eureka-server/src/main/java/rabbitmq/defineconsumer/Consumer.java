@@ -1,9 +1,10 @@
-package rabbitmq.quickstart;
+package rabbitmq.defineconsumer;
 
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -45,13 +46,9 @@ public class Consumer {
         // 形参 queue 接收队列名
         // 形参 autoAck 表示是否自动签收（它是一个布尔值）（它表示当消费者接收到消息之后，是否自动给 RabbitMQ 服务器发送回执）（该形参值一般都是设置为 false）
         // 形参 callback 接收一个 Consumer （即消费者）类或者它的子类的对象
-        channel.basicConsume(queueName, false, new DefaultConsumer(channel) {
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+        // 方法中传入的第三个参数就是我们自定义的消费者端类对象，构造方法从传入当前这个 channel 类对象
+        channel.basicConsume(queueName, true, new MyConsumer(channel));
 
-                System.out.println(Arrays.toString(body));
-            }
-        });
 
     }
 }
