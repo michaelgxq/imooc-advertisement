@@ -1,5 +1,6 @@
 package rabbitmq.spring;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -13,17 +14,22 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import rabbitmq.spring.adapter.MessageDelegate;
 import rabbitmq.spring.convert.ImageMessageConverter;
 import rabbitmq.spring.convert.PDFMessageConverter;
 import rabbitmq.spring.convert.TextMessageConverter;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 @Configuration
 @ComponentScan({"rabbitmq.spring.*"})
 public class RabbitMQConfig {
 
+	// 在配置文件中创建 CachingConnectionFactory 类对象来设置用于连接 RabbitMQ 服务器的信息
 	@Bean
 	public ConnectionFactory connectionFactory(){
 		CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
@@ -33,7 +39,8 @@ public class RabbitMQConfig {
 		connectionFactory.setVirtualHost("/");
 		return connectionFactory;
 	}
-	
+
+	// 在配置文件中创建 RabbitAdmin 类对象，构造方法中传入上面创建的 CachingConnectionFactory 类对象
 	@Bean
 	public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
 		RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
@@ -41,10 +48,21 @@ public class RabbitMQConfig {
 		return rabbitAdmin;
 	}
 
+	// 在配置文件中创建 RabbitTemplate 类对象，构造方法中传入上面创建的 CachingConnectionFactory 类对象
 	@Bean
 	public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
 
+		HashMap<String, Object> props = new HashMap<>();
+		props.put("content-type", "application/json");
+
+		MessageHeaders messageHeaders = new MessageHeaders(props);
+		String msg = "hello!";
+
+		Message<String> message = MessageBuilder.createMessage(msg, messageHeaders);
+
+//		rabbitTemplate.setConfirmCallback(RabbitTemplate.ConfirmCallback);
+		rabbitTemplate.convertAndSend("test.queue", message);
 		return rabbitTemplate;
 	}
 	
@@ -66,12 +84,16 @@ public class RabbitMQConfig {
     public Queue queue001() {  
         return new Queue("queue001", true); //队列持久  
     }  
-    
+
+
+    // 在配置文件中根据需要创建 Binding 类对象，通过链式编程把上面创建的队列和交换机通过 BindingKey 进行绑定
+	// 下面方法中，with() 方法中传入的就是 BindingKey，只不过这里 IDE 提示的是 routingKey
     @Bean  
     public Binding binding001() {  
         return BindingBuilder.bind(queue001()).to(exchange001()).with("spring.*");  
     }  
-    
+
+
     @Bean  
     public TopicExchange exchange002() {  
         return new TopicExchange("topic002", true, false);  
@@ -112,7 +134,8 @@ public class RabbitMQConfig {
     
     @Bean
     public SimpleMessageListenerContainer messageContainer(ConnectionFactory connectionFactory) {
-    	
+
+		MessageBuilder.createMessage()
     	SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
     	container.setQueues(queue001(), queue002(), queue003(), queue_image(), queue_pdf());
     	container.setConcurrentConsumers(1);

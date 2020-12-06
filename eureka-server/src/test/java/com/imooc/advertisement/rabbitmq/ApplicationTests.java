@@ -3,7 +3,6 @@ package com.imooc.advertisement.rabbitmq;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -68,21 +67,22 @@ public class ApplicationTests {
 	
 	@Test
 	public void testSendMessage() throws Exception {
-		//1 创建消息
+		// 创建 MessageProperties 类对象
 		MessageProperties messageProperties = new MessageProperties();
-		messageProperties.getHeaders().put("desc", "信息描述..");
-		messageProperties.getHeaders().put("type", "自定义消息类型..");
-		Message message = new Message("Hello RabbitMQ".getBytes(), messageProperties);
-		
-		rabbitTemplate.convertAndSend("topic001", "spring.amqp", message, new MessagePostProcessor() {
-			@Override
-			public Message postProcessMessage(Message message) throws AmqpException {
-				System.err.println("------添加额外的设置---------");
-				message.getMessageProperties().getHeaders().put("desc", "额外修改的信息描述");
-				message.getMessageProperties().getHeaders().put("attr", "额外新加的属性");
-				return message;
-			}
-		});
+
+		// 调用 MessageProperties 类中的相关方法设置消息的相关属性
+		messageProperties.setContentType("application/json");
+		messageProperties.setExpiration("1000");
+
+
+		// 创建字符串类型的消息 msg
+		String msg = "Hello RabbitMQ";
+
+		// 创建 Message 类对象，构造方法中传入上面创建的消息 msg 的字节数组，以及上面创建的 MessageProperties 类对象
+		Message message = new Message(msg.getBytes(), messageProperties);
+
+		// 调用 RabbitTemplate 类中的 convertAndSend() 方法发送消息
+		rabbitTemplate.convertAndSend("topic001", "spring.amqp", message);
 	}
 	
 	@Test
