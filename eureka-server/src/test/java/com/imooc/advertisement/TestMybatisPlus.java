@@ -41,8 +41,16 @@ public class TestMybatisPlus {
         user.setAge(31);
         user.setManagerId(1087982257332887553L);
         user.setCreateTime(new Date());
-        int insert = userMapper.insert(user);
+//        int insert = userMapper.insert(user);
+//
+//        System.out.println("影响记录数：" + insert);
 
-        System.out.println("影响记录数：" + insert);
+        this.changeName(user);
+
+        System.out.println(user.getName());
+    }
+
+    private void changeName(User user) {
+        user.setName("哈哈哈");
     }
 }

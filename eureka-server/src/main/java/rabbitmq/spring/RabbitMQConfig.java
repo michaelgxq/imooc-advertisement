@@ -135,7 +135,6 @@ public class RabbitMQConfig {
     @Bean
     public SimpleMessageListenerContainer messageContainer(ConnectionFactory connectionFactory) {
 
-		MessageBuilder.createMessage()
     	SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
     	container.setQueues(queue001(), queue002(), queue003(), queue_image(), queue_pdf());
     	container.setConcurrentConsumers(1);
