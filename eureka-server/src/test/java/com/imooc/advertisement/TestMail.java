@@ -1,5 +1,6 @@
 package com.imooc.advertisement;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,6 +172,7 @@ public class TestMail {
 
 
     @Test
+    @Ignore
     public void testMailSending() {
 
         // 发送文本邮件
