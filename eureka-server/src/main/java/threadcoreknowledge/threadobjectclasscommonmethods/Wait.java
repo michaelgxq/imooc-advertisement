@@ -1,5 +1,11 @@
 package threadcoreknowledge.threadobjectclasscommonmethods;
 
+import lombok.SneakyThrows;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * 描述：     展示wait和notify的基本用法 1. 研究代码执行顺序 2. 证明wait释放锁
  */
@@ -10,13 +16,19 @@ public class Wait {
     // 定义静态内部类 Thread1
     static class Thread1 extends Thread {
 
+        // 注意
+        // wait() 方法和 notify() 方法是写在两个不同的同步代码块中的，当前这个同步代码块中只写了 notify() 方法
+
         @Override
         public void run() {
             // 定义同步代码块，锁对象为上面定义的成员变量 object
             synchronized (object) {
                 System.out.println(Thread.currentThread().getName() + "开始执行了");
                 try {
-                    // 调用 Object 对象中的 wait() 方法，使得调用此方法的线程陷入阻塞状态
+                    System.out.println(Thread.currentThread().getName() + "准备进入等待状态");
+
+                    // 进入到该同步代码块的线程调用 Object 对象中的 wait() 方法
+                    // 使得此线程陷入等待状态（即 WAITING 状态）（同时该线程所持有的锁对象会被释放，以便让其他线程竞争获取）
                     object.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -30,10 +42,16 @@ public class Wait {
     // 定义静态内部类 Thread2
     static class Thread2 extends Thread {
 
+        // 注意
+        // wait() 方法和 notify() 方法是写在两个不同的同步代码块中的，当前这个同步代码块中只写了 notify() 方法
+
+        @SneakyThrows
         @Override
         public void run() {
             // 定义同步代码块，锁对象为上面定义的成员变量 object
             synchronized (object) {
+                // 进入到该同步代码块的线程调用 Object 对象中的 notify() 方法
+                // 使得那些进入等待状态（即 WAITING 状态）的线程中的一个能够被唤醒（即 进入 RUNNABLE 状态）（由 CPU 调度决定唤醒哪一个）
                 object.notify();
 
                 // 注意
@@ -43,6 +61,8 @@ public class Wait {
                 // 此时
                 // 那个被上面的 notify() 方法唤醒的线程才能获取到锁，并执行它自己同步代码块或同步方法中剩余的代码（即 wait() 方法之后的代码）
                 System.out.println("线程" + Thread.currentThread().getName() + "调用了notify()");
+
+                Thread.sleep(2000);
             }
         }
     }
@@ -50,14 +70,27 @@ public class Wait {
 
     public static void main(String[] args) throws InterruptedException {
 
-        Thread1 thread1 = new Thread1();
-        Thread2 thread2 = new Thread2();
+//        Thread1 thread1 = new Thread1();
+//        Thread2 thread2 = new Thread2();
+//
+//        thread1.start();
+//
+//        Thread.sleep(200);
+//
+//        thread2.start();
+//
+//        for (int i = 0; i < 10; i++) {
+//            System.out.println("线程 thread0 的状态：" + thread1.getState());
+//            System.out.println("线程 thread1 的状态：" + thread2.getState());
+//        }
 
-        thread1.start();
 
-        Thread.sleep(200);
-
-        thread2.start();
+        HashMap<String, String> stringStringHashMap = new HashMap<>();
+        stringStringHashMap.put("张三", "20");
+        Set<Map.Entry<String, String>> entries = stringStringHashMap.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            System.out.println("类型：" + entry.getClass());
+        }
     }
 
     // 上面的代码执行结果为

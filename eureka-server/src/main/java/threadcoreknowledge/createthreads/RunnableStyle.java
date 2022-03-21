@@ -1,7 +1,7 @@
 package threadcoreknowledge.createthreads;
 
 /**
- * 描述：     用Runnable方式创建线程
+ * 创建 RunnableStyle 类，该类实现了 Runnable 接口
  */
 public class RunnableStyle implements Runnable{
 
@@ -10,6 +10,7 @@ public class RunnableStyle implements Runnable{
         thread.start();
     }
 
+    // 定义线程任务（即 实现 Runnable 接口中的 run() 方法
     @Override
     public void run() {
         System.out.println("用Runnable方法实现线程");

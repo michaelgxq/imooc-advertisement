@@ -20,6 +20,14 @@ import java.util.Date;
 @ToString
 @TableName("mp_user")
 public class User {
+    private static int aged = 0;
+
+    public void agg() {
+        System.out.println("aged ===== " + aged);
+
+        aged++;
+    }
+
     @TableId
     private Long userId;
 
