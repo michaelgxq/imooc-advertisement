@@ -20,28 +20,30 @@ public class ThreadJoinVisibility {
 
     public static void main(String[] args) {
 
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                // 使当前线程休眠R毫秒（R的值为随机数）
-                Tools.randomPause(50);
+        Thread thread = new Thread(() -> {
+            // 使当前线程休眠 R 毫秒（R 的值为随机数，此时 R 为 50）
+            Tools.randomPause(50);
 
-                // 更新data的值
-                data = 1;
-            }
-        };
+            // 更新 data 的值
+            data = 1;
+        });
 
         thread.start();
 
-        // 等待线程thread结束后，main线程才继续运行
+        // 等待线程 thread 结束后，main 线程才继续运行
         try {
             thread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // 读取并打印变量data的值
+        // 读取并打印变量 data 的值
         System.out.println(data);
 
     }
 }
+// 对于上面的代码
+// 子线程（即 变量 thread）运行时将共享变量 data 的值更新为 1
+// 因此
+// 父线程（即当前这个 main() 方法所在线程）对子线程（即 变量 thread）的 join() 方法调用结束后
+// 父线程能读取到被更改后的共享变量 data 的值 1
